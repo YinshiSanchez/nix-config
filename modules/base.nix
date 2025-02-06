@@ -22,5 +22,4 @@
       };
     };
   };
-  xdg.enable = true;
 }
