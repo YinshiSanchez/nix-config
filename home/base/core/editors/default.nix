@@ -26,8 +26,14 @@
     [
       # rust
       # rust-overlay
-      rust-bin.stable.latest.default # The default profile of `rustup`.
-      rust-bin.stable.latest.rust-analyzer # rust lsp
+      (rust-bin.stable.latest.default.override {
+        extensions = [
+          "rust-src" # source code
+          "rustfmt" # formatting tool
+          "rust-analyzer" # lsp
+          "clippy" # lint
+        ];
+      })
     ]
     ++
     # go
