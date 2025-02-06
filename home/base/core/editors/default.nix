@@ -19,6 +19,7 @@
       # llvmPackages.clang-unwrapped
       clang-tools
       lldb
+      bear # Bear is a tool that generates a compilation database for clang tooling.
     ]
     ++
     # rust
@@ -27,6 +28,11 @@
       # rust-overlay
       rust-bin.stable.latest.default # The default profile of `rustup`.
       rust-bin.stable.latest.rust-analyzer # rust lsp
+    ]
+    ++
+    # go
+    [
+      go
     ]
     ++
     # nix

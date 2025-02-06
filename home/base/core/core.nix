@@ -14,6 +14,8 @@
       duf
       # Shell extension that manages your environment
       direnv
+      # A simple, fast and user-friendly alternative to 'find'
+      fd
     ];
   };
 }
