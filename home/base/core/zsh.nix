@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   programs.zsh = {
     enable = true;
     autosuggestion.enable = true;
@@ -6,15 +10,28 @@
     syntaxHighlighting.enable = true;
 
     dotDir = ".config/zsh";
+    shellAliases = {
+      lg = "lazygit";
+      byte_proxy = "http_proxy=http://sys-proxy-rd-relay.byted.org:8118 https_proxy=http://sys-proxy-rd-relay.byted.org:8118 no_proxy=.byted.org";
+    };
 
-    initExtraFirst = ''
-      ZVM_INIT_MODE=sourcing
-    '';
+    initContent = lib.mkMerge [
+      (lib.mkBefore ''
+        ZVM_INIT_MODE=sourcing
+        export CLANG_FORMAT=/usr/bin/clang-format
+        export NIXPKGS_ALLOW_UNFREE=1
+        eval "$(direnv hook zsh)"
+      '')
+      (lib.mkAfter ''
+        bindkey ^F forward-word
+        bindkey ^B backward-word
+        # bindkey '^I' expand-or-complete
 
-    initExtra = ''
-      bindkey ^F forward-word
-      bindkey ^B backward-word
-    '';
+        # Fix CTRL+L clearing scrollback buffer
+        # Use clear-screen instead of the default clear which might include \e[3J
+        bindkey '^L' clear-screen
+      '')
+    ];
 
     plugins = [
       {

@@ -2,13 +2,9 @@
   description = "Personal nix config";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable-small";
 
-    nixGL = {
-      url = "github:nix-community/nixGL";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     flake-utils.url = "github:numtide/flake-utils";
 
@@ -23,7 +19,7 @@
     };
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -34,7 +30,6 @@
     self,
     nixpkgs,
     nixpkgs-unstable,
-    nixGL,
     nix-index-database,
     rust-overlay,
     home-manager,
@@ -64,7 +59,6 @@
       pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
-        overlays = [nixGL.overlays.default rust-overlay.overlays.default];
       };
 
       pkgs-unstable = import nixpkgs-unstable {
@@ -72,10 +66,6 @@
         config.allowUnfree = true;
       };
 
-      # nixgl = {
-      #   packages = inputs.nixGL.packages.${system};
-      #   config.allowUnfree = true;
-      # };
     };
 
     pkgArgs = forAllSystems (system: genSpecialArgs system);

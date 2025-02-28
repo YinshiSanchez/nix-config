@@ -8,7 +8,6 @@
   programs.alacritty = {
     enable = true;
     # settings = builtins.fromTOML (builtins.readFile ./alacritty.toml);
-    package = config.lib.nixGL.wrap pkgs.alacritty;
 
     settings = {
       # general.import = [ ./catppuccin-mocha.toml ];
@@ -16,6 +15,10 @@
         opacity = 0.85;
         startup_mode = "Maximized"; # Maximized window
         dynamic_title = true;
+        padding = {
+          x = 0;
+          y = 0;
+        };
       };
 
       scrolling = {history = 10000;};
@@ -31,7 +34,7 @@
       terminal = {
         shell = {
           program = "${pkgs.zsh}/bin/zsh";
-          args = ["-l" "-c" "zellij"];
+          args = ["-l"];
         };
         # Controls the ability to write to the system clipboard with the OSC 52 escape sequence.
         osc52 = "CopyPaste";

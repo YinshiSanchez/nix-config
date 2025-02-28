@@ -3,13 +3,13 @@
 
   programs.zellij = {
     enable = true;
-    enableZshIntegration = true;
 
     settings = {
       default_shell = "zsh";
-      default_mode = "locked";
+      default_mode = "normal";
       mouse_mode = true;
       scroll_buffer_size = 10000;
+      show_startup_tips= false;
     };
   };
 }

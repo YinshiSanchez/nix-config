@@ -1,4 +1,9 @@
-{mylib, ...}: {
+{mylib,  ...}: {
   imports = mylib.scanPaths ./.;
-  # TODO
+
+  programs.neovim = {
+    enable = true;
+    viAlias = true;
+    vimAlias = true;
+  };
 }
