@@ -20,20 +20,27 @@
       clang-tools
       lldb
       bear # Bear is a tool that generates a compilation database for clang tooling.
+      protobuf
+      protobufc
     ]
     ++
     # rust
     [
       # rust
       # rust-overlay
-      (rust-bin.stable.latest.default.override {
-        extensions = [
-          "rust-src" # source code
-          "rustfmt" # formatting tool
-          "rust-analyzer" # lsp
-          "clippy" # lint
-        ];
-      })
+      # (rust-bin.stable.latest.default.override {
+      #   extensions = [
+      #   ];
+      # })
+      (rust-bin.selectLatestNightlyWith (toolchain:
+        toolchain.default.override {
+          extensions = [
+            "rust-src" # source code
+            "rustfmt" # formatting tool
+            "rust-analyzer" # lsp
+            "clippy" # lint
+          ];
+        }))
     ]
     ++
     # go

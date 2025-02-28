@@ -16,6 +16,8 @@
       direnv
       # A simple, fast and user-friendly alternative to 'find'
       fd
+      # A framework for managing and maintaining multi-language pre-commit hooks.
+      pre-commit
     ];
   };
 }
