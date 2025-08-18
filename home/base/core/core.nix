@@ -1,5 +1,4 @@
 {
-  inputs,
   pkgs,
   ...
 }: {
@@ -22,12 +21,13 @@
       uv
       # command line json pager
       jless
-      #
       nodejs_24
       # a lightweight and portable command-line YAML, JSON, INI and XML processor.
       yq-go
       # a dependency and package manager for C and C++ languages
       conan
+      # Python frame stack sampler for CPython
+      austin
     ];
   };
 }

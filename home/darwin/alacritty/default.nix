@@ -1,26 +1,27 @@
 {
   config,
   pkgs,
-  lib,
-  is_desktop,
   ...
 }: {
   catppuccin.alacritty.enable = true;
 
-  programs.alacritty = lib.mkIf is_desktop {
+  programs.alacritty = {
     enable = true;
-    # settings = builtins.fromTOML (builtins.readFile ./alacritty.toml);
+    package = pkgs.alacritty;
 
     settings = {
-      # general.import = [ ./catppuccin-mocha.toml ];
+       keyboard.bindings = [
+        {
+          key = "Space";
+          mods = "Shift";
+          action = "ToggleViMode";
+        }
+      ];
       window = {
         opacity = 0.85;
         startup_mode = "Maximized"; # Maximized window
         dynamic_title = true;
-        padding = {
-          x = 0;
-          y = 0;
-        };
+        option_as_alt = "Both"; # use `option` as `alt` in MacOS
       };
 
       scrolling = {history = 10000;};
@@ -36,9 +37,8 @@
       terminal = {
         shell = {
           program = "${pkgs.zsh}/bin/zsh";
-          args = ["-l"];
+          args = ["-l" "-c" "zellij"];
         };
-        # Controls the ability to write to the system clipboard with the OSC 52 escape sequence.
         osc52 = "CopyPaste";
       };
     };

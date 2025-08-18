@@ -1,52 +1,62 @@
 {
   pkgs,
   mylib,
+  system,
   ...
 }: {
   imports = mylib.scanPaths ./.;
 
   home.packages = with pkgs;
-  # cpp tools
     [
+      cmake
+      cmake-language-server
       gnumake
       checkmake
+      gcc
       # c/c++ tools with clang-tools, the unwrapped version won't
       # add alias like `cc` and `c++`, so that it won't conflict with gcc
       # llvmPackages.clang-unwrapped
-      # llvmPackages_18.clang-tools
+      clang-tools
+      lldb
       bear # Bear is a tool that generates a compilation database for clang tooling.
       protobuf
       protobufc
     ]
-    ++
-    # go
-    [
+    ++ [
+      (rust-bin.selectLatestNightlyWith (toolchain:
+        toolchain.default.override {
+          extensions = [
+            "rust-src"
+            "rustfmt"
+            "rust-analyzer"
+            "clippy"
+          ];
+        }))
+    ]
+    ++ [
+      lua
+    ]
+    ++ [
       go
     ]
-    ++
-    # nix
-    [
-      # lsp
+    ++ [
       nil
-      # # nixd
-      statix # Lints and suggestions for the nix programming language
-      alejandra # Nix Code Formatter]
+      statix
+      alejandra
     ]
-    ++
-    # python
-    [
+    ++ [
       black
     ]
-    ++
-    #
-    [
+    ++ [
       dotnet-sdk
     ]
-    ++
-    # js
-    [
+    ++ [
       bun
       nodejs_24
     ]
-    ;
+    ++ (
+      if system == "x86_64-linux"
+      then [gdb]
+      else []
+    );
 }
