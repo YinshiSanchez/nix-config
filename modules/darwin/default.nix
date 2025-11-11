@@ -13,6 +13,7 @@
 
   nixpkgs.hostPlatform = system;
   system.stateVersion = 5;
+  system.primaryUser = "bytedance";
 
   environment.systemPackages = with pkgs; [
     htop

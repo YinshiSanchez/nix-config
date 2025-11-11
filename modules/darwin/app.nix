@@ -48,6 +48,7 @@ in {
       "raycast"
       "visual-studio-code"
       "font-fira-code-nerd-font"
+      "ghostty"
     ];
   };
 }
