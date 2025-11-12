@@ -64,10 +64,13 @@
 
     genSpecialArgs = system: {
       inherit mylib;
-      pkgs = import
-        (if lib.hasSuffix "darwin" system
-        then nixpkgs-darwin
-        else nixpkgs) {
+      pkgs =
+        import
+        (
+          if lib.hasSuffix "darwin" system
+          then nixpkgs-darwin
+          else nixpkgs
+        ) {
           inherit system;
           config.allowUnfree = true;
           overlays = [rust-overlay.overlays.default];
@@ -92,7 +95,8 @@
             inherit (host) username homeDirectory is_desktop system;
           };
         modules = host.hostModules ++ host.homeModules;
-      }) hostConfigs.homeOnlyHosts;
+      })
+    hostConfigs.homeOnlyHosts;
 
     # darwin-rebuild switch --flake .#<host>
     darwinConfigurations = builtins.mapAttrs (_: host:
@@ -117,6 +121,7 @@
               };
             }
           ];
-      }) hostConfigs.darwinHosts;
+      })
+    hostConfigs.darwinHosts;
   };
 }

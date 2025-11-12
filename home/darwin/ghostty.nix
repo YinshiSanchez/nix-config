@@ -25,7 +25,7 @@ in {
     macos-titlebar-style = tabs
     shell-integration = zsh
     shell-integration-features = sudo,no-cursor
-    theme = light:catppuccin-mocha,dark:catppuccin-mocha
+    theme = Catppuccin Mocha
     window-decoration = true
     window-padding-balance = true
     window-padding-x = 10

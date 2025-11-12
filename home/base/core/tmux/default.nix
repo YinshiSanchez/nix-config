@@ -117,4 +117,8 @@ in {
       set -g status-position bottom
     '';
   };
+
+  home.packages = with pkgs; [
+    perl
+  ];
 }
