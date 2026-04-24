@@ -1,10 +1,8 @@
 {
   pkgs,
-  extraPlugins ? [],
-  primaryIpModule ? null,
+  tmuxConfig,
 }: let
   # 辅助函数：自动生成 run-shell 指令
-  # 标准 Nix插件路径通常是: share/tmux-plugins/<name>/<name>.tmux
   loadPlugin = pluginPack: let
     args =
       if builtins.isAttrs pluginPack && builtins.hasAttr "plugin" pluginPack
@@ -12,73 +10,70 @@
       else {plugin = pluginPack;};
     plugin = args.plugin;
     extraConfig = args.extraConfig or "";
-  in
-    # load config first, then run-shell to load the plugin
-    ''
-      ${extraConfig}
-      run-shell ${plugin}/share/tmux-plugins/${plugin.pluginName}/${plugin.pluginName}.tmux
-    '';
+  in ''
+    ${extraConfig}
+    run-shell ${plugin}/share/tmux-plugins/${plugin.pluginName}/${plugin.pluginName}.tmux
+  '';
+
+  # 辅助函数：渲染 Catppuccin 模块定义
+  # 如果模块提供了 definition，直接渲染
+  renderModuleDefinition = mod:
+    if mod ? definition
+    then mod.definition
+    else "";
+
+  # 辅助函数：渲染 Catppuccin 模块初始化脚本 (init)
+  # 用于 source 对应的 conf 文件 (例如 directory.conf)
+  renderModuleInit = mod:
+    if mod ? init
+    then mod.init
+    else "";
+
+  # 辅助函数：生成 status-right 的组件
+  renderStatusModule = mod: "set -agF status-right \"#{E:@catppuccin_status_${mod.name}}\"";
+
 in ''
-  # Place your custom tmux configuration here
-  # This file will be appended to the gpakosz's .tmux.conf.local
+  # ==========================================
+  # General Settings
+  # ==========================================
+  ${tmuxConfig.baseConfig}
 
-  # Options to make tmux more pleasant
-  set -g mouse on
-  set -g mode-keys vi
-  set -g status-keys vi
-  set -g default-terminal "tmux-256color"
-  set -ga terminal-overrides ",*:Tc"
-
-  # Configure the catppuccin plugin
+  # ==========================================
+  # Catppuccin Configuration
+  # ==========================================
   tmux_conf_theme=disabled
-  set -g @catppuccin_flavor "mocha"
-  set -g @catppuccin_window_status_style "rounded"
-  set -g @catppuccin_directory_text " #{=/-20/...:#{s|$HOME|~|:pane_current_path}}"
-  set -g @catppuccin_window_text " #W"
-  set -g @catppuccin_window_current_text " #W"
+  ${builtins.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (k: v: "set -g @catppuccin_${k} \"${v}\"") tmuxConfig.catppuccin.options)}
 
-  # Load catppuccin
+  # Load Catppuccin Core
   # 使用 source-file 同步加载，确保变量在 status-right 构建前立即可用
   source -F "${pkgs.tmuxPlugins.catppuccin}/share/tmux-plugins/catppuccin/catppuccin_options_tmux.conf"
   source -F "${pkgs.tmuxPlugins.catppuccin}/share/tmux-plugins/catppuccin/catppuccin_tmux.conf"
 
-  # 强制重新加载 directory 模块，确保它能读取到最新的 @catppuccin_directory_text
-  source -F "${pkgs.tmuxPlugins.catppuccin}/share/tmux-plugins/catppuccin/status/directory.conf"
+  # ==========================================
+  # Custom & Standard Module Definitions
+  # ==========================================
+  # 1. Define custom modules (variables + sourcing status_module.conf)
+  ${builtins.concatStringsSep "\n" (map renderModuleDefinition tmuxConfig.catppuccin.modules)}
 
-  # Primary IP module for catppuccin (requires tmux-primary-ip plugin)
-  ${
-    if primaryIpModule != null
-    then "source -F ${primaryIpModule}"
-    else ""
-  }
+  # 2. Initialize/Reload modules if needed (e.g. re-sourcing directory.conf)
+  ${builtins.concatStringsSep "\n" (map renderModuleInit tmuxConfig.catppuccin.modules)}
 
-  set -g automatic-rename-format "#{window_icon} #{b:pane_current_path}"
-  # Make the status line pretty and add some modules
+  # ==========================================
+  # Status Line Composition
+  # ==========================================
   set -g status-right-length 200
   set -g status-left-length 100
   set -g status-left ""
   set -g status-left "#{E:@catppuccin_status_session} "
   set -g status-right ""
-  # set -g status-right "#{E:@catppuccin_status_application}"
 
-  # 注意：这里改用 set -ag (去掉F)，让 status line 在运行时动态展开 path
-  # 如果用 -F，会在加载配置时立即展开，导致 path 为空
-  set -ag status-right "#{E:@catppuccin_status_directory}"
-  set -agF status-right "#{E:@catppuccin_status_primary_ip}"
-  set -agF status-right "#{E:@catppuccin_status_cpu}"
-  set -ag status-right "#{E:@catppuccin_status_uptime}"
-  set -agF status-right "#{E:@catppuccin_status_battery}"
+  # Append modules to status-right in order
+  ${builtins.concatStringsSep "\n" (map renderStatusModule tmuxConfig.catppuccin.modules)}
+
   set -g status-position bottom
 
-  # Load standard plugins
-  ${loadPlugin pkgs.tmuxPlugins.cpu}
-  ${loadPlugin pkgs.tmuxPlugins.battery}
-
-  # Load extra custom plugins
-  ${builtins.concatStringsSep "\n" (map loadPlugin extraPlugins)}
-
-  # Fix CTRL+L clearing scrollback history
-  # gpakosz config binds C-l to 'send-keys C-l \; clear-history' by default.
-  # We override it to only send the keys.
-  bind -n C-l send-keys C-l
+  # ==========================================
+  # Plugins Loading
+  # ==========================================
+  ${builtins.concatStringsSep "\n" (map loadPlugin tmuxConfig.plugins)}
 ''
