@@ -27,9 +27,9 @@ in {
     shell-integration-features = sudo,no-cursor
     theme = Catppuccin Mocha
     window-decoration = true
-    window-padding-balance = true
+    window-padding-balance = false
     window-padding-x = 10
-    window-padding-y = 10
+    window-padding-y = 0
     keybind = shift+enter=text:\n
     auto-update-channel = tip
   '';
