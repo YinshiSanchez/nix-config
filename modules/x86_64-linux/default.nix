@@ -1,7 +1,7 @@
 {mylib, ...}: {
   imports = (mylib.scanPaths ./.) ++ [../base.nix];
-  
-  fontconfig = {
+
+  fonts.fontconfig = {
     enable = true;
     defaultFonts = {
       emoji = ["FiraCode Nerd Font"];

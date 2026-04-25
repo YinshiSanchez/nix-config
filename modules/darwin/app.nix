@@ -1,4 +1,8 @@
-{lib, ...}: let
+{
+  lib,
+  is_desktop,
+  ...
+}: let
   # Homebrew Mirror
   # NOTE: is only useful when you run `brew install` manually! (not via nix-darwin)
   homebrew_mirror_env = {
@@ -44,12 +48,15 @@ in {
     ];
 
     # `brew install --cask`
-    casks = [
-      "raycast"
-      "visual-studio-code"
-      "font-fira-code-nerd-font"
-      "ghostty"
-      "rectangle"
-    ];
+    casks =
+      [
+        "raycast"
+        "visual-studio-code"
+        "font-fira-code-nerd-font"
+        "rectangle"
+      ]
+      ++ lib.optionals is_desktop [
+        "ghostty"
+      ];
   };
 }

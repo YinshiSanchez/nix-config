@@ -1,11 +1,9 @@
-{
-  ...
-}: {
+{...}: {
   xdg.enable = true;
 
   home = {
-    username = "yinshi";
-    homeDirectory = "/home/yinshi";
+    username = "dev";
+    homeDirectory = "/home/dev";
 
     sessionPath = [
       "$HOME/.local/bin"

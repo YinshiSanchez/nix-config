@@ -58,8 +58,6 @@
       "aarch64-darwin"
     ];
 
-    # This is a function that generates an attribute by calling a function you
-    # pass to it, with each system as an argument
     forAllSystems = lib.genAttrs systems;
 
     genSpecialArgs = system: {
@@ -83,28 +81,48 @@
     };
 
     pkgArgs = forAllSystems genSpecialArgs;
-  in {
-    # Available through 'home-manager switch --flake .#your-username@your-hostname'
-    homeConfigurations = builtins.mapAttrs (_: host:
+
+    mkHomeConfiguration = host:
       home-manager.lib.homeManagerConfiguration {
         pkgs = pkgArgs.${host.system}.pkgs;
         extraSpecialArgs =
           pkgArgs.${host.system}
           // {
             inherit inputs outputs;
-            inherit (host) username homeDirectory is_desktop system;
+            inherit (host) username homeDirectory system;
+            is_desktop = host.is_desktop or false;
           };
-        modules = host.hostModules ++ host.homeModules;
-      })
-    hostConfigs.homeOnlyHosts;
+        modules =
+          (lib.optionals (!lib.hasSuffix "darwin" host.system) host.hostModules)
+          ++ host.homeModules
+          ++ [
+            {
+              home = {
+                username = lib.mkDefault host.username;
+                homeDirectory = lib.mkDefault host.homeDirectory;
+              };
+            }
+          ];
+      };
 
-    # darwin-rebuild switch --flake .#<host>
+    mkHomeConfigurations = hosts:
+      lib.concatMapAttrs (hostname: host: let
+        config = mkHomeConfiguration host;
+      in {
+        ${hostname} = config;
+        "${host.username}@${hostname}" = config;
+      })
+      hosts;
+  in {
+    homeConfigurations = mkHomeConfigurations (hostConfigs.homeOnlyHosts // hostConfigs.darwinHosts);
+
     darwinConfigurations = builtins.mapAttrs (_: host:
       darwin.lib.darwinSystem rec {
         specialArgs =
           pkgArgs.${host.system}
           // {
             inherit inputs outputs;
+            is_desktop = host.is_desktop or false;
           }
           // {inherit (host) username homeDirectory system;};
         modules =

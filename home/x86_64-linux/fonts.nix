@@ -1,14 +1,3 @@
-{pkgs, ...}: {
-  fonts = {
-    packages = with pkgs; [
-      (nerdfonts.override {
-        fonts = [
-          # symbols icon only
-          "NerdFontsSymbolsOnly"
-          # Characters
-          "FiraCode"
-        ];
-      })
-    ];
-  };
+{...}: {
+  # Fonts are installed from shared packages in home/base/core/core.nix.
 }

@@ -1,7 +1,7 @@
 {catppuccin, ...}: {
   homeOnlyHosts = {
     ubuntu-dev = rec {
-      username = "yinshi";
+      username = "dev";
       homeDirectory = "/home/${username}";
       system = "x86_64-linux";
       is_desktop = true;
@@ -37,6 +37,8 @@
       username = "bytedance";
       homeDirectory = "/Users/${username}";
       system = "aarch64-darwin";
+      is_desktop = true;
+      is_desktop = true;
       homeModules = [
         ../home/darwin
         ../hosts/work/home.nix

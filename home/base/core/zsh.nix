@@ -13,6 +13,7 @@
     shellAliases = {
       lg = "lazygit";
       byte_proxy = "http_proxy=http://sys-proxy-rd-relay.byted.org:8118 https_proxy=http://sys-proxy-rd-relay.byted.org:8118 no_proxy=.byted.org";
+      singbox_proxy = "http_proxy=http://127.0.0.1:2892 https_proxy=http://127.0.0.1:2892";
     };
 
     initContent = lib.mkMerge [
