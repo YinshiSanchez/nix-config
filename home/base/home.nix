@@ -8,6 +8,7 @@
       "$HOME/.bin"
       "$HOME/.cargo/bin"
       "$HOME/go/bin"
+      "$HOME/.bun/bin"
     ];
   };
 

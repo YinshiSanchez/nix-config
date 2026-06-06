@@ -22,17 +22,17 @@
       protobuf
       protobufc
     ]
-    ++ [
-      (rust-bin.selectLatestNightlyWith (toolchain:
-        toolchain.default.override {
-          extensions = [
-            "rust-src"
-            "rustfmt"
-            "rust-analyzer"
-            "clippy"
-          ];
-        }))
-    ]
+    # ++ [
+    #   (rust-bin.selectLatestNightlyWith (toolchain:
+    #     toolchain.default.override {
+    #       extensions = [
+    #         "rust-src"
+    #         "rustfmt"
+    #         "rust-analyzer"
+    #         "clippy"
+    #       ];
+    #     }))
+    # ]
     ++ [
       lua
     ]

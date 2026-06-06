@@ -34,10 +34,9 @@
 
   darwinHosts = {
     work = rec {
-      username = "bytedance";
+      username = "yinshi";
       homeDirectory = "/Users/${username}";
       system = "aarch64-darwin";
-      is_desktop = true;
       is_desktop = true;
       homeModules = [
         ../home/darwin

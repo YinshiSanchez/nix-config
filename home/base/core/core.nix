@@ -29,6 +29,8 @@
         yq-go
         # a dependency and package manager for C and C++ languages
         conan
+        # Fast, disk space efficient package manager for JavaScript
+        pnpm
       ]
       ++ lib.optionals (builtins.hasAttr "austin" pkgs) [
         # Python frame stack sampler for CPython
