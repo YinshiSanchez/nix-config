@@ -2,8 +2,8 @@
   xdg.enable = true;
 
   home = {
-    username = "dev";
-    homeDirectory = "/home/dev";
+    username = "yinshi";
+    homeDirectory = "/home/yinshi";
 
     sessionPath = [
       "$HOME/.local/bin"

@@ -13,7 +13,7 @@
 
   home.activation.installNeovimConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
     nvimConfigDir="${config.xdg.configHome}/nvim"
-    nvimConfigRepo="git@github.com:YinshiSanchez/nvim.git"
+    nvimConfigRepo="https://github.com/YinshiSanchez/nvim.git"
 
     if [ -e "$nvimConfigDir" ] && [ ! -d "$nvimConfigDir" ]; then
       echo "Skipping Neovim config setup: $nvimConfigDir exists but is not a directory" >&2

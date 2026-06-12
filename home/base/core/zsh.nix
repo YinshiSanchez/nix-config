@@ -33,6 +33,11 @@
         bindkey '^L' clear-screen
       '')
     ];
+    envExtra = ''
+    if [ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
+      . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+    fi
+    '';
 
     plugins = [
       {
